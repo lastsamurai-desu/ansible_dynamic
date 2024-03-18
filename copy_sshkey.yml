@@ -1,0 +1,19 @@
+---
+#Ensure that in ansible config file - host_key_checking = False
+- name: Copy SSH keys to hosts
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Execute ssh-copy-id and accept key
+      expect:
+        command: ssh-copy-id -i /home/ansible/.ssh/id_ed25519.pub {{ item }}
+        responses:
+          #Responses vary for Redhat vs Ubuntu, thus take into account the password vs Password request       
+          "(?i)password:": "ansible\n"
+          "(?i)Password" : "ansible\n"
+      #For specified group in inventory file    
+      loop: "{{ groups['redhat'] }}"
+      #For single IP enter as shown below
+      # loop: 
+      #   - "54.175.167.233"
