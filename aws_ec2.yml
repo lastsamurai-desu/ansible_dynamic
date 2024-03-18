@@ -1,0 +1,30 @@
+# Run the command <$ansible-galaxy collection install amazon.aws> to install the plugin
+# Create the inventory file that ends with <aws_ec2.yml/yaml> and use the examples in the ansible documentation to configure it.
+# Configure the ansible.cfg file to read the inventory from the aws_ec2.yaml file
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+filters:
+  instance-state-name: running     
+keyed_groups:
+  - key: hostname
+    prefix: public_ip
+  - key: placement.region
+    prefix: aws_region
+  - key: tags.Type
+    separator: ''
+  - key: tags.Name
+    separator: ''
+  
+hostnames:
+  - ip-address
+  - dns-name
+  - tag:Type
+  - tag:Name
+  # - name: 'private-ip-address'
+  #   separator: ' '
+  #   prefix: 'tag:Name'  
+groups:
+  redhat: "'Rhel' in tags.Name"
+  ubuntu: "'Ubuntu' in tags.Name"
+  ansible_controller: "'Ansible' in tags.Name"
